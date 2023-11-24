@@ -1,17 +1,22 @@
 import { Request, Response } from 'express';
 import { StudentServices } from './student.service';
+import { studentValidationZod } from './student.validation.zod';
 
 const createStudent = async (req: Request, res: Response) => {
   try {
     const student = req.body.student;
-    const result = await StudentServices.createStudentIntoDB(student);
+    const validResult = studentValidationZod.parse(student);
+    const result = await StudentServices.createStudentIntoDB(validResult);
     res.status(200).json({
       success: true,
       message: 'Student created successfully',
       data: result,
     });
-  } catch (error) {
-    res.status(400).send(error);
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  } catch (error: any) {
+    res.status(400).json({
+      error: error?.message,
+    });
   }
 };
 
