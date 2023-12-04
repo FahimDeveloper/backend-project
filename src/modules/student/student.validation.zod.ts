@@ -1,125 +1,46 @@
 import { z } from 'zod';
 
 export const studentValidationZod = z.object({
-  id: z.string().optional(),
-  password: z.string(),
-  name: z
-    .object({
-      firstName: z
-        .string()
-        .min(1)
-        .trim()
-        .refine(value => value.length > 0, {
-          message: 'First name is required',
-        }),
-      middleName: z
-        .string()
-        .min(1)
-        .refine(value => value.length > 0, {
-          message: 'Middle name is required',
-        }),
-      lastName: z
-        .string()
-        .min(1)
-        .refine(value => value.length > 0, {
-          message: 'Last name is required',
-        }),
-    })
-    .refine(
-      value =>
-        value.firstName !== '' &&
-        value.middleName !== '' &&
-        value.lastName !== '',
-      {
-        message: 'Name is required',
-      },
-    ),
-
-  gender: z.enum(['male', 'female']).refine(value => value !== undefined, {
-    message: 'Gender is required',
+  name: z.object({
+    firstName: z.string({ required_error: 'First name is required' }),
+    middleName: z.string().optional(),
+    lastName: z.string({ required_error: 'Last name is required' }),
   }),
-
-  email: z.string().email({ message: 'Invalid email address' }),
-  contactNumber: z
-    .string()
-    .min(1)
-    .refine(value => value.length > 0, {
-      message: 'Contact number is required',
-    }),
-
-  emergencyContactNumber: z
-    .string()
-    .min(1)
-    .refine(value => value.length > 0, {
-      message: 'Emergency contact number is required',
-    }),
-
+  gender: z.string({ required_error: 'Gender is required' }),
+  email: z.string({ required_error: 'Email is required' }).email(),
+  contactNo: z.string({ required_error: 'Contact number is required' }),
+  emergencyContactNo: z.string({
+    required_error: 'Emergency contact number is required',
+  }),
   dateOfBirth: z.string(),
-  bloodGroup: z.string(),
-  presentAddress: z
-    .string()
-    .min(1)
-    .refine(value => value.length > 0, {
-      message: 'Present address is required',
-    }),
-  permanentAddress: z
-    .string()
-    .min(1)
-    .refine(value => value.length > 0, {
-      message: 'Permanent address is required',
-    }),
-
-  guardian: z
-    .object({
-      fatherName: z
-        .string()
-        .min(1)
-        .refine(value => value.length > 0, {
-          message: "Father's name is required",
-        }),
-      fatherOccupation: z
-        .string()
-        .min(1)
-        .refine(value => value.length > 0, {
-          message: "Father's occupation is required",
-        }),
-      fatherContactNumber: z
-        .string()
-        .min(1)
-        .refine(value => value.length > 0, {
-          message: "Father's contact number is required",
-        }),
-      motherName: z
-        .string()
-        .min(1)
-        .refine(value => value.length > 0, {
-          message: "Mother's name is required",
-        }),
-      motherOccupation: z
-        .string()
-        .min(1)
-        .refine(value => value.length > 0, {
-          message: "Mother's occupation is required",
-        }),
-      motherContactNumber: z
-        .string()
-        .min(1)
-        .refine(value => value.length > 0, {
-          message: "Mother's contact number is required",
-        }),
-    })
-    .refine(value => Object.values(value).every(v => v !== ''), {
-      message: 'Guardian information is required',
-    }),
-
-  profileImage: z
-    .string()
-    .min(1)
-    .refine(value => value.length > 0, {
-      message: 'Profile image is required',
-    }),
-
-  isActive: z.boolean().refine(value => value !== undefined, {
-    message: 'isActive status is required',
+  bloodGroup: z.enum(['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-']),
+  presentAddress: z.string({ required_error: 'Present address is required' }),
+  permanentAddress: z.string({
+    required_error: 'Permanent address is required',
   }),
+  guardian: z.object({
+    fatherName: z.string({ required_error: "Father's name is required" }),
+    fatherContactNo: z.string({
+      required_error: "Father's contact number is required",
+    }),
+    motherName: z.string({ required_error: "Mother's name is required" }),
+    motherContactNo: z.string({
+      required_error: "Mother's contact number is required",
+    }),
+  }),
+  localGuardian: z.object({
+    fatherOccupation: z.string({
+      required_error: "Father's occupation is required",
+    }),
+    fatherOccupationContactNo: z.string({
+      required_error: "Father's contact number is required",
+    }),
+    motherOccupation: z.string({
+      required_error: "Mother's occupation is required",
+    }),
+    motherOccupationContactNo: z.string({
+      required_error: "Mother's contact number is required",
+    }),
+  }),
+  profileImage: z.string({ required_error: 'Profile image is required' }),
 });

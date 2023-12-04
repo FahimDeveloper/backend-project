@@ -1,38 +1,41 @@
 /* eslint-disable no-unused-vars */
-import { Model } from 'mongoose';
+import { Types } from 'mongoose';
 
 export interface TStudent {
   id?: string;
-  password: string;
+  user?: Types.ObjectId;
   name: {
     firstName: string;
     middleName?: string;
     lastName: string;
   };
   email: string;
-  gender: 'male' | 'female';
+  gender: string;
   dateOfBirth: string;
-  contactNumber: string;
-  emergencyContactNumber: string;
-  bloodGroup?: string;
+  contactNo: string;
+  emergencyContactNo: string;
+  bloodGroup?: 'A+' | 'A-' | 'B+' | 'B-' | 'AB+' | 'AB-' | 'O+' | 'O-';
   presentAddress: string;
   permanentAddress: string;
   guardian: {
     fatherName: string;
-    fatherOccupation: string;
-    fatherContactNumber: string;
+    fatherContactNo: string;
     motherName: string;
+    motherContactNo: string;
+  };
+  localGuardian: {
+    fatherOccupation: string;
+    fatherOccupationContactNo: string;
     motherOccupation: string;
-    motherContactNumber: string;
+    motherOccupationContactNo: string;
   };
   profileImage: string;
-  isActive: boolean;
 }
 
-//for creating static method
-export interface TStudentModel extends Model<TStudent> {
-  isUserExists(email: string): Promise<TStudent | null>;
-}
+// //for creating static method
+// export interface TStudentModel extends Model<TStudent> {
+//   isUserExists(email: string): Promise<TStudent | null>;
+// }
 
 // for creating custom instace method
 // export type TStudentMethods = {

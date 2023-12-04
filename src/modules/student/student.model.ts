@@ -1,13 +1,16 @@
 /* eslint-disable @typescript-eslint/no-this-alias */
 import { Schema, model } from 'mongoose';
-import { TStudent, TStudentModel } from './student.interface';
+import { TStudent } from './student.interface';
 import validator from 'validator';
-import bcrypt from 'bcrypt';
-import config from '../../config';
 
-const studentSchema = new Schema<TStudent, TStudentModel>({
-  id: { type: String },
-  password: { type: String, required: true },
+const studentSchema = new Schema<TStudent>({
+  id: { type: String, required: [true, 'id is required'] },
+  user: {
+    type: Schema.Types.ObjectId,
+    required: [true, 'User id is required'],
+    unique: true,
+    ref: 'User',
+  },
   // Name information
   name: {
     type: {
@@ -42,18 +45,21 @@ const studentSchema = new Schema<TStudent, TStudentModel>({
       message: '{VALUE} is not valid email format',
     },
   },
-  contactNumber: {
+  contactNo: {
     type: String,
     required: [true, 'Contact number is required'],
   },
-  emergencyContactNumber: {
+  emergencyContactNo: {
     type: String,
     required: [true, 'Emergency contact number is required'],
   },
 
   // Additional personal information
   dateOfBirth: { type: String },
-  bloodGroup: { type: String },
+  bloodGroup: {
+    type: String,
+    enum: ['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-'],
+  },
   presentAddress: {
     type: String,
     required: [true, 'Present address is required'],
@@ -69,11 +75,7 @@ const studentSchema = new Schema<TStudent, TStudentModel>({
       type: String,
       required: [true, "Father's name is required"],
     },
-    fatherOccupation: {
-      type: String,
-      required: [true, "Father's occupation is required"],
-    },
-    fatherContactNumber: {
+    fatherContactNo: {
       type: String,
       required: [true, "Father's contact number is required"],
     },
@@ -81,44 +83,53 @@ const studentSchema = new Schema<TStudent, TStudentModel>({
       type: String,
       required: [true, "Mother's name is required"],
     },
-    motherOccupation: {
-      type: String,
-      required: [true, "Mother's occupation is required"],
-    },
-    motherContactNumber: {
+    motherContactNo: {
       type: String,
       required: [true, "Mother's contact number is required"],
     },
   },
-
+  localGuardian: {
+    fatherOccupation: {
+      type: String,
+      required: [true, "Father's occupation is required"],
+    },
+    fatherOccupationContactNo: {
+      type: String,
+      required: [true, "Father's contact number is required"],
+    },
+    motherOccupation: {
+      type: String,
+      required: [true, "Mother's occupation is required"],
+    },
+    motherOccupationContactNo: {
+      type: String,
+      required: [true, "Mother's contact number is required"],
+    },
+  },
   // Miscellaneous information
   profileImage: {
     type: String,
     required: [true, 'Profile image is required'],
   },
-  isActive: {
-    type: Boolean,
-    required: [true, 'isActive status is required'],
-  },
 });
 
-// pre save middleware/hook
-studentSchema.pre('save', async function (next) {
-  // console.log(this, 'pre hook: we will save the data');
-  //hashing password and save in mongo
-  const user = this;
-  user.password = await bcrypt.hash(
-    user.password,
-    Number(config.bcrypt_salt_round),
-  );
-  next();
-});
+// // pre save middleware/hook
+// studentSchema.pre('save', async function (next) {
+//   // console.log(this, 'pre hook: we will save the data');
+//   //hashing password and save in mongo
+//   const user = this;
+//   user.password = await bcrypt.hash(
+//     user.password,
+//     Number(config.bcrypt_salt_round),
+//   );
+//   next();
+// });
 
-//post save middleware/hook
-studentSchema.post('save', function (doc, next) {
-  doc.password = '';
-  next();
-});
+// //post save middleware/hook
+// studentSchema.post('save', function (doc, next) {
+//   doc.password = '';
+//   next();
+// });
 
 //creating a custom instace method
 // studentSchema.methods.isUserExists = async function (email: string) {
@@ -131,4 +142,4 @@ studentSchema.statics.isUserExists = async (email: string) => {
   const existingUser = await Student.findOne({ email: email });
   return existingUser;
 };
-export const Student = model<TStudent, TStudentModel>('Student', studentSchema);
+export const Student = model<TStudent>('Student', studentSchema);
