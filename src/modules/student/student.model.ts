@@ -17,7 +17,6 @@ const studentSchema = new Schema<TStudent>({
       firstName: {
         type: String,
         required: true,
-        unique: true,
         trim: true,
       },
       middleName: { type: String, required: true },
@@ -30,7 +29,7 @@ const studentSchema = new Schema<TStudent>({
   gender: {
     type: String,
     enum: {
-      values: ['male', 'female'],
+      values: ['Male', 'Female'],
       message: 'Gender must be either "male" or "female".',
     },
     required: [true, 'Gender is required'],
@@ -40,6 +39,7 @@ const studentSchema = new Schema<TStudent>({
   email: {
     type: String,
     required: [true, 'Email is required'],
+    unique: true,
     validate: {
       validator: async (value: string) => validator.isEmail(value),
       message: '{VALUE} is not valid email format',
@@ -111,25 +111,11 @@ const studentSchema = new Schema<TStudent>({
     type: String,
     required: [true, 'Profile image is required'],
   },
+  isDeleted: {
+    type: Boolean,
+    default: false,
+  },
 });
-
-// // pre save middleware/hook
-// studentSchema.pre('save', async function (next) {
-//   // console.log(this, 'pre hook: we will save the data');
-//   //hashing password and save in mongo
-//   const user = this;
-//   user.password = await bcrypt.hash(
-//     user.password,
-//     Number(config.bcrypt_salt_round),
-//   );
-//   next();
-// });
-
-// //post save middleware/hook
-// studentSchema.post('save', function (doc, next) {
-//   doc.password = '';
-//   next();
-// });
 
 //creating a custom instace method
 // studentSchema.methods.isUserExists = async function (email: string) {
@@ -137,9 +123,24 @@ const studentSchema = new Schema<TStudent>({
 //   return existingUser;
 // };
 
+studentSchema.pre('find', function (next) {
+  this.find({ isDeleted: { $ne: true } });
+  next();
+});
+
+studentSchema.pre('findOne', function (next) {
+  this.findOne({ isDeleted: { $ne: true } });
+  next();
+});
+
+studentSchema.pre('aggregate', function (next) {
+  this.pipeline().unshift({ $match: { isDeleted: { $ne: true } } });
+  next();
+});
+
 //creating a custom static method
-studentSchema.statics.isUserExists = async (email: string) => {
-  const existingUser = await Student.findOne({ email: email });
-  return existingUser;
-};
+// studentSchema.statics.isUserExists = async (email: string) => {
+//   const existingUser = await Student.findOne({ email: email });
+//   return existingUser;
+// };
 export const Student = model<TStudent>('Student', studentSchema);

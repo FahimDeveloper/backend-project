@@ -6,7 +6,7 @@ export const studentValidationZod = z.object({
     middleName: z.string().optional(),
     lastName: z.string({ required_error: 'Last name is required' }),
   }),
-  gender: z.string({ required_error: 'Gender is required' }),
+  gender: z.enum(['Male', 'Female'], { required_error: 'Gender is required' }),
   email: z.string({ required_error: 'Email is required' }).email(),
   contactNo: z.string({ required_error: 'Contact number is required' }),
   emergencyContactNo: z.string({
@@ -43,4 +43,5 @@ export const studentValidationZod = z.object({
     }),
   }),
   profileImage: z.string({ required_error: 'Profile image is required' }),
+  isDeleted: z.boolean().default(false),
 });

@@ -30,6 +30,7 @@ export interface TStudent {
     motherOccupationContactNo: string;
   };
   profileImage: string;
+  isDeleted: boolean;
 }
 
 // //for creating static method
