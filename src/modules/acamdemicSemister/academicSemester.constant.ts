@@ -24,12 +24,12 @@ export const academicSemesterCode: TAcademicSemesterCode[] = ['01', '02', '03'];
 
 export const academicSemesterName: TAcademicSemesterName[] = [
   'Autumn',
-  'Summer',
+  'Summar',
   'Fall',
 ];
 
 export const academicSemesterCodeMapper: TCodeMapper = {
   Autumn: '01',
-  Summer: '02',
+  Summar: '02',
   Fall: '03',
 };
