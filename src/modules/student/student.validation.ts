@@ -1,85 +1,66 @@
-import Joi from 'joi';
+import { z } from 'zod';
 
-const studentSchema = Joi.object({
-  id: Joi.string(),
-  name: Joi.object({
-    firstName: Joi.string().max(5).required().messages({
-      'any.required': 'First name is required',
-      'string.max': 'name length more then 5 cheracter',
+const createStudentValidationSchema = z.object({
+  body: z.object({
+    password: z
+      .string({
+        invalid_type_error: 'password must be string',
+      })
+      .min(12, { message: 'Password must be at least 12 characters' })
+      .optional(),
+    student: z.object({
+      name: z.object({
+        firstName: z.string({ required_error: 'First name is required' }),
+        middleName: z.string().optional(),
+        lastName: z.string({ required_error: 'Last name is required' }),
+      }),
+      gender: z.enum(['Male', 'Female'], {
+        required_error: 'Gender is required',
+      }),
+      email: z.string({ required_error: 'Email is required' }).email(),
+      contactNo: z.string({ required_error: 'Contact number is required' }),
+      emergencyContactNo: z.string({
+        required_error: 'Emergency contact number is required',
+      }),
+      dateOfBirth: z.string(),
+      bloodGroup: z.enum(['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-']),
+      presentAddress: z.string({
+        required_error: 'Present address is required',
+      }),
+      permanentAddress: z.string({
+        required_error: 'Permanent address is required',
+      }),
+      guardian: z.object({
+        fatherName: z.string({ required_error: "Father's name is required" }),
+        fatherContactNo: z.string({
+          required_error: "Father's contact number is required",
+        }),
+        motherName: z.string({ required_error: "Mother's name is required" }),
+        motherContactNo: z.string({
+          required_error: "Mother's contact number is required",
+        }),
+      }),
+      localGuardian: z.object({
+        fatherOccupation: z.string({
+          required_error: "Father's occupation is required",
+        }),
+        fatherOccupationContactNo: z.string({
+          required_error: "Father's contact number is required",
+        }),
+        motherOccupation: z.string({
+          required_error: "Mother's occupation is required",
+        }),
+        motherOccupationContactNo: z.string({
+          required_error: "Mother's contact number is required",
+        }),
+      }),
+      admissionSemester: z.string(),
+      profileImage: z.string({ required_error: 'Profile image is required' }),
+      isDeleted: z.boolean().default(false),
     }),
-    middleName: Joi.string().required().messages({
-      'any.required': 'Middle name is required',
-    }),
-    lastName: Joi.string().required().messages({
-      'any.required': 'Last name is required',
-    }),
-  })
-    .required()
-    .messages({
-      'any.required': 'Name is required',
-    }),
-
-  gender: Joi.string().valid('male', 'female').required().messages({
-    'any.required': 'Gender is required',
-    'any.only': 'Gender must be either "male" or "female"',
-  }),
-
-  email: Joi.string().email().required().messages({
-    'any.required': 'Email is required',
-    'string.email': 'Please provide a valid email address',
-  }),
-
-  dateOfBirth: Joi.string(),
-  contactNumber: Joi.string().required().messages({
-    'any.required': 'Contact number is required',
-  }),
-
-  emergencyContactNumber: Joi.string().required().messages({
-    'any.required': 'Emergency contact number is required',
-  }),
-
-  bloodGroup: Joi.string(),
-
-  presentAddress: Joi.string().required().messages({
-    'any.required': 'Present address is required',
-  }),
-
-  permanentAddress: Joi.string().required().messages({
-    'any.required': 'Permanent address is required',
-  }),
-
-  guardian: Joi.object({
-    fatherName: Joi.string().required().messages({
-      'any.required': "Father's name is required",
-    }),
-    fatherOccupation: Joi.string().required().messages({
-      'any.required': "Father's occupation is required",
-    }),
-    fatherContactNumber: Joi.string().required().messages({
-      'any.required': "Father's contact number is required",
-    }),
-    motherName: Joi.string().required().messages({
-      'any.required': "Mother's name is required",
-    }),
-    motherOccupation: Joi.string().required().messages({
-      'any.required': "Mother's occupation is required",
-    }),
-    motherContactNumber: Joi.string().required().messages({
-      'any.required': "Mother's contact number is required",
-    }),
-  })
-    .required()
-    .messages({
-      'any.required': 'Guardian information is required',
-    }),
-
-  profileImage: Joi.string().required().messages({
-    'any.required': 'Profile image is required',
-  }),
-
-  isActive: Joi.boolean().required().messages({
-    'any.required': 'isActive status is required',
   }),
 });
 
-export default studentSchema;
+export const studentValidations = {
+  createStudentValidationSchema,
+};

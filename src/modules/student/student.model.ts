@@ -4,7 +4,7 @@ import { TStudent } from './student.interface';
 import validator from 'validator';
 
 const studentSchema = new Schema<TStudent>({
-  id: { type: String, required: [true, 'id is required'] },
+  id: { type: String, unique: true, required: [true, 'id is required'] },
   user: {
     type: Schema.Types.ObjectId,
     required: [true, 'User id is required'],
@@ -55,7 +55,7 @@ const studentSchema = new Schema<TStudent>({
   },
 
   // Additional personal information
-  dateOfBirth: { type: String },
+  dateOfBirth: { type: String, required: true },
   bloodGroup: {
     type: String,
     enum: ['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-'],
@@ -105,6 +105,11 @@ const studentSchema = new Schema<TStudent>({
       type: String,
       required: [true, "Mother's contact number is required"],
     },
+  },
+  admissionSemester: {
+    type: Schema.Types.ObjectId,
+    required: true,
+    ref: 'academic-semesters',
   },
   // Miscellaneous information
   profileImage: {
