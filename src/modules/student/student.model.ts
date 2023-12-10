@@ -2,6 +2,9 @@
 import { Schema, model } from 'mongoose';
 import { TStudent } from './student.interface';
 import validator from 'validator';
+import AppError from '../../utils/AppError';
+import httpStatus from 'http-status';
+import { AcademicDepartmentModel } from '../academicDepartment/academicDepartment.model';
 
 const studentSchema = new Schema<TStudent>({
   id: { type: String, unique: true, required: [true, 'id is required'] },
@@ -111,6 +114,11 @@ const studentSchema = new Schema<TStudent>({
     required: true,
     ref: 'academic-semesters',
   },
+  academicDepartment: {
+    type: Schema.Types.ObjectId,
+    required: true,
+    ref: 'academic-departments',
+  },
   // Miscellaneous information
   profileImage: {
     type: String,
@@ -127,6 +135,16 @@ const studentSchema = new Schema<TStudent>({
 //   const existingUser = await Student.findOne({ email: email });
 //   return existingUser;
 // };
+
+studentSchema.pre('save', async function (next) {
+  const findDepartment = await AcademicDepartmentModel.findById(
+    this.academicDepartment,
+  );
+  if (!findDepartment) {
+    throw new AppError(httpStatus.NOT_FOUND, 'Academic department not found');
+  }
+  next();
+});
 
 studentSchema.pre('find', function (next) {
   this.find({ isDeleted: { $ne: true } });

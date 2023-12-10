@@ -55,12 +55,63 @@ const createStudentValidationSchema = z.object({
         }),
       }),
       admissionSemester: z.string(),
+      academicDepartment: z.string(),
       profileImage: z.string({ required_error: 'Profile image is required' }),
       isDeleted: z.boolean().default(false),
+    }),
+  }),
+});
+const updateStudentValidationSchema = z.object({
+  body: z.object({
+    password: z
+      .string({
+        invalid_type_error: 'password must be string',
+      })
+      .min(12, { message: 'Password must be at least 12 characters' })
+      .optional(),
+    student: z.object({
+      name: z
+        .object({
+          firstName: z.string().optional(),
+          middleName: z.string().optional(),
+          lastName: z.string().optional(),
+        })
+        .optional(),
+      gender: z.enum(['Male', 'Female']).optional(),
+      email: z.string().email().optional(),
+      contactNo: z.string().optional(),
+      emergencyContactNo: z.string().optional(),
+      dateOfBirth: z.string().optional(),
+      bloodGroup: z
+        .enum(['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-'])
+        .optional(),
+      presentAddress: z.string().optional(),
+      permanentAddress: z.string().optional(),
+      guardian: z
+        .object({
+          fatherName: z.string().optional(),
+          fatherContactNo: z.string().optional(),
+          motherName: z.string().optional(),
+          motherContactNo: z.string().optional(),
+        })
+        .optional(),
+      localGuardian: z
+        .object({
+          fatherOccupation: z.string().optional(),
+          fatherOccupationContactNo: z.string().optional(),
+          motherOccupation: z.string().optional(),
+          motherOccupationContactNo: z.string().optional(),
+        })
+        .optional(),
+      admissionSemester: z.string().optional(),
+      academicDepartment: z.string().optional(),
+      profileImage: z.string(),
+      isDeleted: z.boolean().optional(),
     }),
   }),
 });
 
 export const studentValidations = {
   createStudentValidationSchema,
+  updateStudentValidationSchema,
 };

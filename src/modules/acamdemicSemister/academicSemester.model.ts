@@ -26,7 +26,7 @@ const academicSemesterSchema = new Schema<TAcademicSemester>(
 );
 
 academicSemesterSchema.pre('save', async function (next) {
-  const isSemesterExist = await AcademicSemester.findOne({
+  const isSemesterExist = await AcademicSemesterModel.findOne({
     year: this.year,
     name: this.name,
   });
@@ -36,7 +36,7 @@ academicSemesterSchema.pre('save', async function (next) {
   next();
 });
 
-export const AcademicSemester = model<TAcademicSemester>(
-  'academic-semester',
+export const AcademicSemesterModel = model<TAcademicSemester>(
+  'academic-semesters',
   academicSemesterSchema,
 );

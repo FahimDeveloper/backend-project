@@ -1,5 +1,7 @@
 import { Schema, model } from 'mongoose';
 import { TAcademicDepartment } from './academicDepartment.interface';
+import AppError from '../../utils/AppError';
+import httpStatus from 'http-status';
 
 const academicDepartmentSchema = new Schema<TAcademicDepartment>(
   {
@@ -26,12 +28,12 @@ academicDepartmentSchema.pre('findOneAndUpdate', async function (next) {
   const query = this.getQuery();
   const isDepartmentExist = await AcademicDepartmentModel.findOne(query);
   if (!isDepartmentExist) {
-    throw new Error('This department does not exists');
+    throw new AppError(httpStatus.NOT_FOUND, 'This department does not exists');
   }
   next();
 });
 
 export const AcademicDepartmentModel = model<TAcademicDepartment>(
-  'academic-department',
+  'academic-departments',
   academicDepartmentSchema,
 );

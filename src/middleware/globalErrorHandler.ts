@@ -11,7 +11,8 @@ const globalErrorHandler = (
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   next: NextFunction,
 ) => {
-  const statusCode = httpStatus.BAD_REQUEST;
+  console.log(error.statusCode);
+  const statusCode = error.statusCode || httpStatus.BAD_REQUEST;
   const message = error?.issues ? error.issues[0].message : error?.message;
   return res.status(statusCode).json({
     success: false,

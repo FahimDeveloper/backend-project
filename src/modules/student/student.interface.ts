@@ -30,6 +30,7 @@ export interface TStudent {
     motherOccupationContactNo: string;
   };
   admissionSemester: Types.ObjectId;
+  academicDepartment: Types.ObjectId;
   profileImage: string;
   isDeleted: boolean;
 }
