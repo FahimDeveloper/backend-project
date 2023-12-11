@@ -105,7 +105,7 @@ const updateStudentValidationSchema = z.object({
         .optional(),
       admissionSemester: z.string().optional(),
       academicDepartment: z.string().optional(),
-      profileImage: z.string(),
+      profileImage: z.string().optional(),
       isDeleted: z.boolean().optional(),
     }),
   }),

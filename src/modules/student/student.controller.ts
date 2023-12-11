@@ -24,11 +24,15 @@ const getStudent = catchAsync(async (req, res) => {
 });
 
 const patchStudent = catchAsync(async (req, res) => {
-  const body = req.body;
-  await StudentServices.updateStudent(req.params.id, body);
+  const { student } = req.body;
+  const result = await StudentServices.updateStudentIntoDB(
+    req.params.id,
+    student,
+  );
   res.status(httpStatus.OK).json({
     success: true,
     message: 'Student update successfully',
+    data: result,
   });
 });
 
