@@ -33,6 +33,8 @@ const updateSingleAcademicDepartmentIntoDB = async (
   departmentId: string,
   payload: TAcademicDepartment,
 ) => {
+  const academicDepartmentModel = new AcademicDepartmentModel();
+  await academicDepartmentModel.isAcademicDepartmentExist(departmentId);
   const result = await AcademicDepartmentModel.findOneAndUpdate(
     { _id: departmentId },
     payload,

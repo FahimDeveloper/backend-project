@@ -1,5 +1,5 @@
 /* eslint-disable no-unused-vars */
-import { Types } from 'mongoose';
+import { HydratedDocument, Model, Types } from 'mongoose';
 
 export interface TStudent {
   id?: string;
@@ -35,18 +35,15 @@ export interface TStudent {
   isDeleted: boolean;
 }
 
-// //for creating static method
-// export interface TStudentModel extends Model<TStudent> {
-//   isUserExists(email: string): Promise<TStudent | null>;
-// }
+// for instance methods
+export type TStudentMethods = {
+  isEmailUserExist(email: string): Promise<void>;
+};
 
-// for creating custom instace method
-// export type TStudentMethods = {
-//   isUserExists(email: string): Promise<TStudent | null>;
-// };
-
-// export type TStudentModel = Model<
-//   TStudent,
-//   Record<string, never>,
-//   TStudentMethods
-// >;
+// for static methods
+export interface TStudentModel
+  extends Model<TStudent, Record<string, never>, TStudentMethods> {
+  isIdUserExist(
+    id: string,
+  ): Promise<HydratedDocument<TStudent, TStudentMethods>>;
+}

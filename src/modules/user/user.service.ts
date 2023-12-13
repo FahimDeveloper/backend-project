@@ -10,16 +10,24 @@ import { TNewUser } from './user.interface';
 import { User } from './user.model';
 import { generatedStudentId } from './user.utils';
 import mongoose from 'mongoose';
+import { AcademicDepartmentModel } from '../academicDepartment/academicDepartment.model';
 
 const createStudentIntoDB = async (password: any, payload: TStudent) => {
+  const studentModel = new Student();
+  await studentModel.isEmailUserExist(payload.email);
+  const academicDepartmentModel = new AcademicDepartmentModel();
+  await academicDepartmentModel.isAcademicDepartmentExist(
+    String(payload.academicDepartment),
+  );
   const session = await mongoose.startSession();
   try {
     session.startTransaction();
 
     // find academic semester info
-    const admissionSemester = await AcademicSemesterModel.findById(
-      payload.admissionSemester,
-    );
+    const admissionSemester =
+      await AcademicSemesterModel.isAcademicSemesterExist(
+        payload.admissionSemester,
+      );
 
     if (!admissionSemester) {
       throw new AppError(httpStatus.NOT_FOUND, 'Admission semester not found');

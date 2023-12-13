@@ -1,12 +1,12 @@
 /* eslint-disable @typescript-eslint/no-this-alias */
 import { Schema, model } from 'mongoose';
-import { TStudent } from './student.interface';
+import { TStudent, TStudentMethods, TStudentModel } from './student.interface';
 import validator from 'validator';
 import AppError from '../../utils/AppError';
 import httpStatus from 'http-status';
 import { AcademicDepartmentModel } from '../academicDepartment/academicDepartment.model';
 
-const studentSchema = new Schema<TStudent>({
+const studentSchema = new Schema<TStudent, TStudentModel, TStudentMethods>({
   id: { type: String, unique: true, required: [true, 'id is required'] },
   user: {
     type: Schema.Types.ObjectId,
@@ -130,11 +130,19 @@ const studentSchema = new Schema<TStudent>({
   },
 });
 
-//creating a custom instace method
-// studentSchema.methods.isUserExists = async function (email: string) {
-//   const existingUser = await Student.findOne({ email: email });
-//   return existingUser;
-// };
+studentSchema.methods.isEmailUserExist = async function (email: string) {
+  const existingUser = await Student.findOne({ email });
+  if (existingUser) {
+    throw new AppError(httpStatus.BAD_REQUEST, `${email} already exists`);
+  }
+};
+
+studentSchema.statics.isIdUserExist = async function (id: string) {
+  const existingUser = await Student.findOne({ id });
+  if (!existingUser) {
+    throw new AppError(httpStatus.NOT_FOUND, 'Student does not exist');
+  }
+};
 
 studentSchema.pre('save', async function (next) {
   const findDepartment = await AcademicDepartmentModel.findById(
@@ -161,9 +169,4 @@ studentSchema.pre('aggregate', function (next) {
   next();
 });
 
-//creating a custom static method
-// studentSchema.statics.isUserExists = async (email: string) => {
-//   const existingUser = await Student.findOne({ email: email });
-//   return existingUser;
-// };
-export const Student = model<TStudent>('Student', studentSchema);
+export const Student = model<TStudent, TStudentModel>('Student', studentSchema);
