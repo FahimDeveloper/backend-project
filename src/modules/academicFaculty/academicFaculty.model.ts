@@ -1,9 +1,15 @@
 import { Schema, model } from 'mongoose';
-import { TAcademicFaculty } from './academicFaculty.interface';
+import {
+  TAcademicFaculty,
+  TAcademicFacultyModel,
+} from './academicFaculty.interface';
 import AppError from '../../utils/AppError';
 import httpStatus from 'http-status';
 
-const AcademicFacultySchema = new Schema<TAcademicFaculty>(
+const AcademicFacultySchema = new Schema<
+  TAcademicFaculty,
+  TAcademicFacultyModel
+>(
   {
     name: { type: String, required: true, unique: true },
   },
@@ -29,7 +35,14 @@ AcademicFacultySchema.pre('findOneAndUpdate', async function (next) {
   next();
 });
 
-export const AcademicFacultyModel = model<TAcademicFaculty>(
-  'academic-faculties',
-  AcademicFacultySchema,
-);
+AcademicFacultySchema.statics.isAcademicFacultyExist = async function (id) {
+  const result = await AcademicFacultyModel.findById(id);
+  if (!result) {
+    throw new AppError(httpStatus.NOT_FOUND, 'This Faculty does not exists');
+  }
+};
+
+export const AcademicFacultyModel = model<
+  TAcademicFaculty,
+  TAcademicFacultyModel
+>('academic-faculties', AcademicFacultySchema);

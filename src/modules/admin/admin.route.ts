@@ -1,0 +1,17 @@
+import express from 'express';
+import validateRequestHandler from '../../middleware/validateRequestHandler';
+import { adminController } from './admin.controller';
+import { CreateAdminSchemaValidation } from './admin.validation';
+
+const router = express.Router();
+
+router.get('/', adminController.getAllAdmins);
+router.get('/:adminId', adminController.getSingleAdmin);
+router.patch(
+  '/update/:adminId',
+  validateRequestHandler(CreateAdminSchemaValidation),
+  adminController.updateAdmin,
+);
+router.delete('/delete/:adminId', adminController.deleteAdmin);
+
+export const adminRoutes = router;
