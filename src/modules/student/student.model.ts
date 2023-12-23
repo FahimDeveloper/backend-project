@@ -138,7 +138,7 @@ studentSchema.methods.isEmailUserExist = async function (email: string) {
 };
 
 studentSchema.statics.isIdUserExist = async function (id: string) {
-  const existingUser = await Student.findOne({ id });
+  const existingUser = await Student.findById(id);
   if (!existingUser) {
     throw new AppError(httpStatus.NOT_FOUND, 'Student does not exist');
   }

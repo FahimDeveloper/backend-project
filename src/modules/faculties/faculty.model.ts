@@ -11,6 +11,7 @@ const facultySchema = new Schema<IFaculty>(
     user: {
       type: Schema.Types.ObjectId,
       required: true,
+      ref: 'User',
     },
     designation: {
       type: String,

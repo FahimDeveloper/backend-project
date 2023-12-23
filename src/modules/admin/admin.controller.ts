@@ -14,7 +14,7 @@ const createAdmin = catchAsync(async (req, res) => {
 
 const updateAdmin = catchAsync(async (req, res) => {
   const data = req.body;
-  const id = req.params.facultyId;
+  const id = req.params.id;
   const result = await adminServices.updateAdminIntoDB(id, data);
   res.status(httpStatus.OK).json({
     success: true,
@@ -33,7 +33,7 @@ const getAllAdmins = catchAsync(async (req, res) => {
 });
 
 const getSingleAdmin = catchAsync(async (req, res) => {
-  const id = req.params.facultyId;
+  const id = req.params.id;
   const result = await adminServices.getSingleAdminFromDB(id);
   res.status(httpStatus.OK).json({
     success: true,
