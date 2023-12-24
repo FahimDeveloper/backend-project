@@ -30,7 +30,10 @@ AcademicFacultySchema.pre('findOneAndUpdate', async function (next) {
   const query = this.getQuery();
   const isFacultyExist = await AcademicFacultyModel.findOne(query);
   if (isFacultyExist) {
-    throw new AppError(httpStatus.NOT_FOUND, 'This Faculty does not exists');
+    throw new AppError(
+      httpStatus.NOT_FOUND,
+      'The Academic Faculty does not exists',
+    );
   }
   next();
 });
@@ -38,7 +41,10 @@ AcademicFacultySchema.pre('findOneAndUpdate', async function (next) {
 AcademicFacultySchema.statics.isAcademicFacultyExist = async function (id) {
   const result = await AcademicFacultyModel.findById(id);
   if (!result) {
-    throw new AppError(httpStatus.NOT_FOUND, 'This Faculty does not exists');
+    throw new AppError(
+      httpStatus.NOT_FOUND,
+      'The Academic Faculty does not exists',
+    );
   }
 };
 

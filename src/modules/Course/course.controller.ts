@@ -51,10 +51,44 @@ const deleteCourse = catchAsync(async (req: Request, res: Response) => {
   });
 });
 
+const assignFacultiesWithCourse = catchAsync(
+  async (req: Request, res: Response) => {
+    const { courseId } = req.params;
+    const { faculties } = req.body;
+    const result = await CourseServices.assignFacultiesWithCourseIntoDB(
+      courseId,
+      faculties,
+    );
+    res.status(httpStatus.OK).json({
+      success: true,
+      message: 'Faculty add in course successfully',
+      data: result,
+    });
+  },
+);
+
+const removeFacultiesFromCourse = catchAsync(
+  async (req: Request, res: Response) => {
+    const { courseId } = req.params;
+    const { faculties } = req.body;
+    const result = await CourseServices.removeFacultiesFromCourseFromDB(
+      courseId,
+      faculties,
+    );
+    res.status(httpStatus.OK).json({
+      success: true,
+      message: 'Faculty remove from course successfully',
+      data: result,
+    });
+  },
+);
+
 export const CourseControllers = {
   createCourse,
   getAllCourses,
   getSingleCourse,
   deleteCourse,
   updateCourse,
+  assignFacultiesWithCourse,
+  removeFacultiesFromCourse,
 };
